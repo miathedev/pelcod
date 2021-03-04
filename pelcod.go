@@ -212,3 +212,10 @@ func SetFocusPosition(address byte, focus uint16) [7]byte {
 	calcPelcoChecksum(&payload)
 	return payload
 }
+
+//Flip
+func Flip(address byte) [7]byte {
+	payload := [7]byte{byte1SyncByte, address, byte3Flip, byte4Flip, 0x00, 0x21, 0x00}
+	calcPelcoChecksum(&payload)
+	return payload
+}

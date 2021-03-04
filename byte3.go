@@ -39,3 +39,6 @@ const byte3ReturnPanPosition = 0x00
 const byte3ReturnTiltPosition = 0x00
 const byte3ReturnZoomPosition = 0x00
 const byte3ReturnFocusPosition = 0x00
+
+const byte3Flip = 0x00
+const byte3GotoZeroPan = 0x00
