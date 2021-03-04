@@ -8,30 +8,30 @@ import (
 	"github.com/jacobsa/go-serial/serial"
 )
 
-var port io.ReadWriteCloser
+var myport io.ReadWriteCloser
 
-func openSerialPort() {
+func OpenSerialPort(portName string, baudrate uint) {
 	options := serial.OpenOptions{
-		PortName:        "/dev/tty.usbserial-A8008HlV",
-		BaudRate:        19200,
+		PortName:        portName,
+		BaudRate:        baudrate,
 		DataBits:        8,
 		StopBits:        1,
 		MinimumReadSize: 4,
 	}
 	// Open the port.
-	port, err := serial.Open(options)
+	test, err := serial.Open(options)
+	myport = test
 	if err != nil {
 		log.Fatalf("serial.Open: %v", err)
 	}
-	port
 }
 
-func closePort() {
-	defer port.Close()
+func ClosePort() {
+	defer myport.Close()
 }
 
-func sendPelco(payload []byte) {
-	n, err := port.Write(payload)
+func SendPelco(payload []byte) {
+	n, err := myport.Write(payload)
 	if err != nil {
 		log.Fatalf("port.Write: %v", err)
 	}
