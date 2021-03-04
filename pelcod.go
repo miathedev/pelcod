@@ -1,5 +1,11 @@
 package pelcod
 
+import (
+	"bytes"
+	"encoding/binary"
+	"fmt"
+)
+
 //Speed from 0x01-3F
 func PanLeft(address byte, speed byte) [7]byte {
 	payload := [7]byte{byte1SyncByte, address, byte3PanLeft, byte4PanLeft, speed, 0x00, 0x00}
@@ -163,6 +169,46 @@ func BacklightCompensation(address byte, backlightCompensation byte) [7]byte {
 //0x02 -> Off
 func AutoWhiteBalanceOnOff(address byte, autoWhiteBalance byte) [7]byte {
 	payload := [7]byte{byte1SyncByte, address, byte3AutoWhiteBalanceOnOff, byte4AutoWhiteBalanceOnOff, 0x00, autoWhiteBalance, 0x00}
+	calcPelcoChecksum(&payload)
+	return payload
+}
+
+func getMsbLsb(input uint16) (byte, byte) {
+	buf := new(bytes.Buffer)
+	err := binary.Write(buf, binary.LittleEndian, input)
+	if err != nil {
+		fmt.Println("binary.Write failed:", err)
+	}
+
+	lsb := buf.Bytes()[0]
+	msb := buf.Bytes()[1]
+	return msb, lsb
+}
+
+func SetPanPosition(address byte, pan uint16) [7]byte {
+	msb, lsb := getMsbLsb(pan)
+	payload := [7]byte{byte1SyncByte, address, byte3SetPanPosition, byte4SetPanPosition, msb, lsb, 0x00}
+	calcPelcoChecksum(&payload)
+	return payload
+}
+
+func SetTiltPosition(address byte, tilt uint16) [7]byte {
+	msb, lsb := getMsbLsb(tilt)
+	payload := [7]byte{byte1SyncByte, address, byte3SetTiltPosition, byte4SetTiltPosition, msb, lsb, 0x00}
+	calcPelcoChecksum(&payload)
+	return payload
+}
+
+func SetZoomPosition(address byte, zoom uint16) [7]byte {
+	msb, lsb := getMsbLsb(zoom)
+	payload := [7]byte{byte1SyncByte, address, byte3SetZoomPosition, byte4SetZoomPosition, msb, lsb, 0x00}
+	calcPelcoChecksum(&payload)
+	return payload
+}
+
+func SetFocusPosition(address byte, focus uint16) [7]byte {
+	msb, lsb := getMsbLsb(focus)
+	payload := [7]byte{byte1SyncByte, address, byte3SetFocusPosition, byte4SetFocusPosition, msb, lsb, 0x00}
 	calcPelcoChecksum(&payload)
 	return payload
 }
